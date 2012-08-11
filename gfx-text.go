@@ -177,7 +177,8 @@ func (self Text) Scale(x, y float32) {
 // \return Transform combining the position/rotation/scale/origin of the object
 // const sfTransform* sfText_getTransform(const sfText* text);
 func (self Text) Transform() Transform {
-	return Transform{C.sfText_getTransform(self.Cref)}
+	ref := C.sfText_getTransform(self.Cref)
+	return Transform{&ref}
 }
 
 // Get the inverse of the combined transform of a text
@@ -185,7 +186,8 @@ func (self Text) Transform() Transform {
 // \return Inverse of the combined transformations applied to the object
 // const sfTransform* sfText_getInverseTransform(const sfText* text);
 func (self Text) InverseTransform() Transform {
-	return Transform{C.sfText_getInverseTransform(self.Cref)}
+	ref := C.sfText_getInverseTransform(self.Cref)
+	return Transform{&ref}
 }
 
 // Set the string of a text (from an ANSI string)

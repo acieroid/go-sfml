@@ -8,7 +8,7 @@ package sfml
 // #include <SFML/Graphics/Transform.h>
 import "C"
 
-import "unsafe"
+//import "unsafe"
 
 type Transform struct {
 	Cref *C.sfTransform
@@ -19,7 +19,7 @@ type Transform struct {
 // \return A new sfTransform object
 // sfTransform* sfTransform_create(void);
 func IdentityTransform() Transform {
-	return Transform{C.sfTransform_create()}
+	return Transform{&C.sfTransform_Identity}
 }
 
 // \brief Create a new transform from a matrix
@@ -37,28 +37,30 @@ func IdentityTransform() Transform {
 // float a10, float a11, float a12,
 // float a20, float a21, float a22);
 func NewFromMatrix(a00, a01, a02, a10, a11, a12, a20, a21, a22 float32) Transform {
-	return Transform{
-		C.sfTransform_createFromMatrix(
-			C.float(a00), C.float(a01), C.float(a02),
-			C.float(a10), C.float(a11), C.float(a12),
-			C.float(a20), C.float(a21), C.float(a22),
-		)}
+	ref := C.sfTransform_fromMatrix(
+		C.float(a00), C.float(a01), C.float(a02),
+		C.float(a10), C.float(a11), C.float(a12),
+		C.float(a20), C.float(a21), C.float(a22),
+	)
+	return Transform{&ref}
 }
 
+// Removed from CSFML
 // \brief Copy an existing transform
 // \param transform Transform to copy
 // \return Copied object
 // sfTransform* sfTransform_copy(sfTransform* transform);
-func (self Transform) Copy() Transform {
-	return Transform{C.sfTransform_copy(self.Cref)}
-}
+//func (self Transform) Copy() Transform {
+//	return Transform{C.sfTransform_copy(self.Cref)}
+//}
 
+// Removed from CSFML
 // \brief Destroy an existing transform
 // \param transform Transform to delete
 // void sfTransform_destroy(sfTransform* transform);
-func (self Transform) Destroy() {
-	C.sfTransform_destroy(self.Cref)
-}
+//func (self Transform) Destroy() {
+//	C.sfTransform_destroy(self.Cref)
+//}
 
 // \brief Return the 4x4 matrix of a transform
 // This function returns a pointer to an array of 16 floats
@@ -71,6 +73,8 @@ func (self Transform) Destroy() {
 // \param transform Transform object
 // \return Pointer to a 4x4 matrix
 // const float* sfTransform_getMatrix(const sfTransform* transform);
+// TODO: GetMatrix now take the matrix as argument (as of current git version of CSFML)
+/*
 func (self Transform) Matrix() [16]float32 {
 	//size := 2
 	carr := C.sfTransform_getMatrix(self.Cref)
@@ -86,6 +90,7 @@ func (self Transform) Matrix() [16]float32 {
 	}
 	return arr
 }
+*/
 
 // \brief Return the inverse of a transform
 // If the inverse cannot be computed, a new identity transform
@@ -94,9 +99,8 @@ func (self Transform) Matrix() [16]float32 {
 // \param result Returned inverse matrix
 // void sfTransform_getInverse(const sfTransform* transform, sfTransform* result);
 func (self Transform) Inverse() Transform {
-	t := Transform{}
-	C.sfTransform_getInverse(self.Cref, t.Cref)
-	return t
+	ref := C.sfTransform_getInverse(self.Cref)
+	return Transform{&ref}
 }
 
 // \brief Apply a transform to a 2D point

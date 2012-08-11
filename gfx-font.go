@@ -104,12 +104,13 @@ func (self Font) Texture(characterSize uint) Texture {
 	return Texture{C.sfFont_getTexture(self.Cref, C.uint(characterSize))}
 }
 
+// Removed from CSFML (commit d7240abb1...)
 // \brief Get the built-in default font (Arial)
 // \return Pointer to the default font
 // const sfFont* sfFont_getDefaultFont(void);
-func (self Font) DefaultFont() Font {
-	return Font{C.sfFont_getDefaultFont()}
-}
+//func (self Font) DefaultFont() Font {
+//	return Font{C.sfFont_getDefaultFont()}
+//}
 
 // TODO:LATER            
 // \brief Create a new image font a file in memory
